@@ -86,6 +86,29 @@ app.delete("/nezetek/:id", (req, res) => {
   );
 });
 
+// 4.feladat: Lehessen módosítani egy kiválasztott nemzet eredményét.
+
+app.put("/versenyekszamok/eredmeny", (req, res) => {
+  const { NemzetKod, Versenyszam, ujEredmeny } = req.body;
+ 
+  const query = `
+      UPDATE versenyekszamok
+      SET Eredmeny = ?
+      WHERE NemzetKod = ? AND Versenyszam = ?;
+    `;
+ 
+  db.query(query, [ujEredmeny, NemzetKod, Versenyszam], (err, result) => {
+    if (err) {
+      console.error("Hiba az eredmény frissítésekor:", err);
+      return res.status(500).json({ error: "Eredmény módosítása sikertelen" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Nem található ilyen rekord" });
+    }
+    res.json({ message: "Eredmény sikeresen frissítve" });
+  });
+});
+
 
   
  
